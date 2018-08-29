@@ -1,6 +1,6 @@
-# Sorna Hook
+# Backend.AI Hook
 
-A private hook library to override library-level functions inside REPL containers
+A user-level hooker to override library functions inside Backend.AI's kernel containers
 
 
 ## Features
