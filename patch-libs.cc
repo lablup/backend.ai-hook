@@ -1,22 +1,21 @@
-#define _GNU_SOURCE
-#include <dlfcn.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <string.h>
-#include <ctype.h>
+#include "utils.hh"
 
-#include <errno.h>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdint>
+#include <cstring>
+#include <cassert>
+#include <cerrno>
+
+#include <ctype.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
-typedef long (*orig_sysconf_ftype)(int flag);
+static const char *input_host = "127.0.0.1";
+static const int input_port = 65000;
 
-typedef int (*orig_scanf_ftype)(const char *format, ...);
-typedef int (*orig_vscanf_ftype)(const char *format, va_list arg);
 
 static int nproc_from_sysfs_cpuset()
 {
@@ -58,10 +57,8 @@ static int nproc_from_sysfs_cpuset()
     return result;
 }
 
-long sysconf(int flag)
-{
-    orig_sysconf_ftype orig_sysconf;
-    orig_sysconf = (orig_sysconf_ftype) dlsym(RTLD_NEXT, "sysconf");
+
+OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
     switch (flag) {
     case _SC_NPROCESSORS_ONLN:
     case _SC_NPROCESSORS_CONF:
@@ -72,6 +69,8 @@ long sysconf(int flag)
     return orig_sysconf(flag);
 }
 
+
+extern "C"
 int scanf(const char *format, ...)
 {
     va_list args;
@@ -105,6 +104,8 @@ int scanf(const char *format, ...)
     return ret;
 }
 
+
+extern "C"
 int vscanf(const char *format, va_list args)
 {
     char buffer[1024];

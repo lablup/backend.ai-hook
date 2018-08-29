@@ -1,0 +1,8 @@
+{
+global:
+    scanf;
+    sysconf;
+    vscanf;
+local:
+    *;
+};
