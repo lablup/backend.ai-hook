@@ -20,5 +20,5 @@ make alpine
 For glibc-compatible build using Debian Linux, run:
 
 ```sh
-make debian
+make ubuntu
 ```
