@@ -46,8 +46,8 @@ int scanf(const char *format, ...)
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    addr.sin_port = htons(65000);
+    addr.sin_addr.s_addr = inet_addr(input_host);
+    addr.sin_port = htons(input_port);
 
     if (connect(sockfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
         perror("connect");
@@ -80,8 +80,8 @@ int vscanf(const char *format, va_list args)
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    addr.sin_port = htons(65000);
+    addr.sin_addr.s_addr = inet_addr(input_host);
+    addr.sin_port = htons(input_port);
 
     if (connect(sockfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
         perror("connect");
