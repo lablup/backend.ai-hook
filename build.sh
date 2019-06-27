@@ -39,16 +39,18 @@ case $distro in
     exit 1
 esac
 
-echo "Building for ${distro} ${arch}"
 docker build -t lablup/hook-dev:${distro} -f Dockerfile.${distro} .
-
 docker_run="docker run --rm -it -v $(pwd):/root -w=/root lablup/hook-dev:${distro} /bin/sh -c"
+
 if [ "$FORCE_CMAKE" -eq 1 -o ! -f "Makefile" ]; then
+  echo ">> Running CMake to (re-)generate build scripts..."
   $docker_run 'cmake CMakeLists.txt'
 fi
 if [ "$CLEAN" -eq 1 ]; then
+  echo ">> Cleaning up..."
   $docker_run 'make clean'
 else
+  echo ">> Building for ${distro} ${arch} ..."
   $docker_run 'make'
   cp "baihook/libbaihook.so" "libbaihook.${distro_ver}.${arch}.so"
   cp "test/test-hook" "test-hook.${distro_ver}.${arch}.bin"
