@@ -14,11 +14,18 @@ A user-level hooker to override library functions inside Backend.AI's kernel con
 For musl-compatible build using Alpine Linux, run:
 
 ```sh
-make alpine
+./build.sh alpine
 ```
 
 For glibc-compatible build using Debian Linux, run:
 
 ```sh
-make ubuntu
+./build.sh ubuntu
+```
+
+## How to run tests
+
+```sh
+./test.sh alpine
+./test.sh ubuntu
 ```

@@ -1,5 +1,5 @@
 FROM bitnami/minideb:jessie
 
-RUN install_packages build-essential
+RUN install_packages build-essential cmake git ca-certificates
 
 # vim: ft=dockerfile

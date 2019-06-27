@@ -50,3 +50,18 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Cmake
+CMakeFiles/
+googletest-build/
+googletest-download/
+googletest-src/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# vim
+.*.swp
+
+# Artifacts
+test/test-hook
