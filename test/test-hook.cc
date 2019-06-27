@@ -33,6 +33,12 @@ TEST(sysfs_cpuset, normal) {
     EXPECT_EQ(n, 2);
 
     tmp_file.open(tmp_path, mode);
+    tmp_file << "0-5";
+    tmp_file.close();
+    n = get_num_processors_from_cpuset(tmp_path.c_str());
+    EXPECT_EQ(n, 6);
+
+    tmp_file.open(tmp_path, mode);
     tmp_file << "0,1";
     tmp_file.close();
     n = get_num_processors_from_cpuset(tmp_path.c_str());
@@ -45,10 +51,16 @@ TEST(sysfs_cpuset, normal) {
     EXPECT_EQ(n, 4);
 
     tmp_file.open(tmp_path, mode);
-    tmp_file << "0,1-2";
+    tmp_file << "0,5-8";
     tmp_file.close();
     n = get_num_processors_from_cpuset(tmp_path.c_str());
-    EXPECT_EQ(n, 3);
+    EXPECT_EQ(n, 5);
+
+    tmp_file.open(tmp_path, mode);
+    tmp_file << "60-62,99-100";
+    tmp_file.close();
+    n = get_num_processors_from_cpuset(tmp_path.c_str());
+    EXPECT_EQ(n, 5);
 
     tmp_file.open(tmp_path, mode);
     tmp_file << "0,2-3,5,7-10";
