@@ -13,14 +13,18 @@ TEST(sysconf, hooked) {
     CPU_ZERO(&cpuset);
     EXPECT_EQ(0, CPU_COUNT(&cpuset));
     ret = sched_getaffinity(pid, sizeof(cpuset), &cpuset);
-    EXPECT_EQ(ret, 0);
+    ASSERT_EQ(ret, 0);
 
     // check cpuset options given to the docker command in test.sh
     EXPECT_EQ(4, CPU_COUNT(&cpuset));
     EXPECT_TRUE(CPU_ISSET(0, &cpuset));
     EXPECT_TRUE(CPU_ISSET(1, &cpuset));
+    EXPECT_FALSE(CPU_ISSET(2, &cpuset));
+    EXPECT_FALSE(CPU_ISSET(3, &cpuset));
     EXPECT_TRUE(CPU_ISSET(4, &cpuset));
     EXPECT_TRUE(CPU_ISSET(5, &cpuset));
+    EXPECT_FALSE(CPU_ISSET(6, &cpuset));
+    EXPECT_FALSE(CPU_ISSET(7, &cpuset));
 
     // compare results of sysconf and cpuset
     int ncpu_sysconf = sysconf(_SC_NPROCESSORS_ONLN);
