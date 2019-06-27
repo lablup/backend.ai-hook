@@ -1,5 +1,5 @@
 FROM alpine:3.8
 
-RUN apk add --no-cache g++ musl-dev make
+RUN apk add --no-cache g++ musl-dev make cmake git
 
 # vim: ft=dockerfile
