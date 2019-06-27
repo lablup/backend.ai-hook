@@ -23,3 +23,13 @@ docker run --rm -it -v $(pwd):/root \
            -e LD_PRELOAD=/root/libbaihook.${distro_ver}.${arch}.so \
            lablup/hook-dev:${distro} \
            /root/test-hooked.${distro_ver}.${arch}.bin
+
+if [ "$distro" = "ubuntu" ]; then
+  echo ""
+  echo ">> Running integration tests for lablup/python-ff:19.06-py36"
+  docker run --rm -it -v $(pwd):/root -w /root/test \
+             --cpuset-cpus=0-1,4-5 \
+             -e LD_PRELOAD=/root/libbaihook.ubuntu16.04.x86_64.so \
+             lablup/python-ff:19.06-py36 \
+             python /root/test/test-numpy.py
+fi
