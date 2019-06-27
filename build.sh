@@ -54,4 +54,5 @@ else
   $docker_run 'make'
   cp "baihook/libbaihook.so" "libbaihook.${distro_ver}.${arch}.so"
   cp "test/test-hook" "test-hook.${distro_ver}.${arch}.bin"
+  cp "test/test-hooked" "test-hooked.${distro_ver}.${arch}.bin"
 fi

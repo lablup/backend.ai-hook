@@ -14,7 +14,7 @@ TEST(has_prefix, basic) {
     EXPECT_FALSE(has_prefix("a", "bbc"));
 }
 
-TEST(sysfs_cpuset, normal) {
+TEST(cpuset_parsing, basic) {
     int n;
     std::string tmp_path = std::tmpnam(nullptr);
     std::ofstream tmp_file;
