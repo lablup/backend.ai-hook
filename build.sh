@@ -39,8 +39,10 @@ case $distro in
     exit 1
 esac
 
+user="$(id -u):$(id -g)"
+
 docker build -t lablup/hook-dev:${distro} -f Dockerfile.${distro} .
-docker_run="docker run --rm -it -v $(pwd):/root -w=/root lablup/hook-dev:${distro} /bin/sh -c"
+docker_run="docker run --rm -it -v $(pwd):/root -u ${user} -w=/root lablup/hook-dev:${distro} /bin/sh -c"
 
 if [ "$FORCE_CMAKE" -eq 1 -o ! -f "Makefile" ]; then
   echo ">> Running CMake to (re-)generate build scripts..."
