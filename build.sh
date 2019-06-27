@@ -1,7 +1,11 @@
 #! /bin/sh
 set -e
-distro=$1
+
+distro="$1"
 arch="x86_64"
+
+# TODO: add version suffix to $distro
+
 echo "Building for ${distro} ${arch}"
 docker build -t lablup/hook-dev:${distro} -f Dockerfile.${distro} .
 
