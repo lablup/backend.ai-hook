@@ -5,6 +5,7 @@ distro="$1"
 arch="x86_64"
 case $distro in
   ubuntu) distro_ver="${distro}16.04" ;;
+  centos) distro_ver="${distro}7.6" ;;
   alpine) distro_ver="${distro}3.8" ;;
   *)
     echo "Unknown distro value: ${distro}"
@@ -34,13 +35,13 @@ if [ "$distro" = "ubuntu" ]; then
              --cpuset-cpus=0-1,4-5 \
              --memory=1g \
              -e LD_PRELOAD=/root/libbaihook.ubuntu16.04.x86_64.so \
-             lablup/python-ff:19.06-py36 \
+             lablup/python-ff:19.06-py36-cuda9 \
              python /root/test/test-numpy.py
 
   docker run --rm -it -u ${user} -v $(pwd):/root -w /root/test \
              --cpuset-cpus=0-1,4-5 \
              --memory=1g \
              -e LD_PRELOAD=/root/libbaihook.ubuntu16.04.x86_64.so \
-             lablup/python-ff:19.06-py36 \
-             sh -c 'mkdir -p /tmp/output; jupyter nbconvert --to notebook --execute assets/src.ipynb --output assets/result.ipynb && ls -l /tmp && ls -l assets'
+             lablup/python-ff:19.06-py36-cuda9 \
+             sh -c 'mkdir -p /tmp/output; jupyter nbconvert --to notebook --execute assets/src.ipynb --output assets/result.ipynb; ls -l /tmp && ls -l assets'
 fi
