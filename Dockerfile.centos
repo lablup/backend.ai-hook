@@ -1,0 +1,15 @@
+FROM centos:7.6.1810
+
+RUN yum --enablerepo=extras install -y centos-release-scl
+RUN yum install -y devtoolset-7
+RUN yum install -y kernel-devel cmake git ca-certificates
+
+# workaround for missing /usr/bin/c++ error
+RUN source scl_source enable devtoolset-7 && \
+    ln -s $(which g++) /usr/bin/c++
+
+# enable the new devtoolset always in any followed docker run commands
+COPY docker.centos.entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+
+# vim: ft=dockerfile
