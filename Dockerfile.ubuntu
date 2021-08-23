@@ -1,5 +1,6 @@
-FROM bitnami/minideb:jessie
+FROM ubuntu:20.04
 
-RUN install_packages build-essential cmake git ca-certificates
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y build-essential cmake git ca-certificates
 
 # vim: ft=dockerfile

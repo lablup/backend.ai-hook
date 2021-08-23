@@ -30,9 +30,9 @@ while [ $# -gt 0 ]; do
 done
 
 distro="$1"
-arch="x86_64"
+arch="$(uname -m)"
 case $distro in
-  ubuntu) distro_ver="${distro}16.04" ;;
+  ubuntu) distro_ver="${distro}20.04" ;;
   centos) distro_ver="${distro}7.6" ;;
   alpine) distro_ver="${distro}3.8" ;;
   *)
@@ -46,7 +46,7 @@ user="$(id -u):$(id -g)"
 git_fix="-e GIT_COMMITTER_NAME=devops -e GIT_COMMITTER_EMAIL=devops@lablup.com"
 
 docker build -t lablup/hook-dev:${distro} -f Dockerfile.${distro} .
-docker_run="docker run --rm -it ${git_fix} -v $(pwd):/root -u ${user} -w=/root lablup/hook-dev:${distro} /bin/sh -c"
+docker_run="docker run --rm -it ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro} /bin/sh -c"
 
 if [ "$FORCE_CMAKE" -eq 1 -o ! -f "Makefile" ]; then
   echo ">> Running CMake to (re-)generate build scripts..."
