@@ -21,15 +21,16 @@
 typedef rettype (*orig_##symbol##_ftype)(__VA_ARGS__); \
 static orig_##symbol##_ftype orig_##symbol = NULL; \
 extern "C" \
-rettype symbol(__VA_ARGS__) { \
+rettype symbol(__VA_ARGS__) {
+
+#define LOAD_ORIG_LIBC_SYMBOL(symbol) \
     do { \
         if (orig_##symbol == NULL) { \
             orig_##symbol = (orig_##symbol##_ftype) \
                     dlsym(RTLD_NEXT, #symbol); \
         } \
         assert(orig_##symbol != NULL); \
-    } while (0);
-
+    } while (0)
 const size_t MAX_KLEN = 256;
 const size_t MAX_VLEN = 4096;
 const size_t MAX_PATH = 260;

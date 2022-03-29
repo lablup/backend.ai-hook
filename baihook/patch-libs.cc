@@ -23,9 +23,18 @@ OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
     case _SC_NPROCESSORS_ONLN:
     case _SC_NPROCESSORS_CONF:
         return get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.cpus");
+    /* though getpagesize() call is considered as deprecated,
+     * without this, redis-server from APT package will stick on a deadlock
+     * during intialization process due to their own jemalloc function loading mechanism.
+     * (check 0010-Add-support-for-USE_SYSTEM_JEMALLOC-flag.patch)
+     * We can remove this case if redis-server served on launchpad changes that behavior.
+     */
+    case _SC_PAGE_SIZE:
+        return getpagesize();
     default:
         break;
     }
+    LOAD_ORIG_LIBC_SYMBOL(sysconf);
     return orig_sysconf(flag);
 }
 
