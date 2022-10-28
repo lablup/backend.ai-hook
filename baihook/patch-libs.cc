@@ -10,13 +10,11 @@
 #include <cerrno>
 
 #include <ctype.h>
-#include <netinet/in.h>
+#include <sys/un.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
-static const char *input_host = "127.0.0.1";
-static const int input_port = 65000;
-
+static const char *input_sock = "/tmp/bai-user-input.sock";
 
 OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
     switch (flag) {
@@ -44,8 +42,8 @@ int scanf(const char *format, ...)
 {
     va_list args;
     char buffer[1024];
-    struct sockaddr_in addr;
-    int sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    struct sockaddr_un addr;
+    int sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sockfd < 0) {
         perror("socket");
         return -errno;
@@ -54,9 +52,8 @@ int scanf(const char *format, ...)
     fflush(stdout);
 
     memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(input_host);
-    addr.sin_port = htons(input_port);
+    addr.sun_family = AF_UNIX;
+    strcpy(addr.sun_path, input_sock);
 
     if (connect(sockfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
         perror("connect");
@@ -78,8 +75,8 @@ extern "C"
 int vscanf(const char *format, va_list args)
 {
     char buffer[1024];
-    struct sockaddr_in addr;
-    int sockfd = socket(PF_INET, SOCK_STREAM, 0);
+    struct sockaddr_un addr;
+    int sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sockfd < 0) {
         perror("socket");
         return -errno;
@@ -88,9 +85,8 @@ int vscanf(const char *format, va_list args)
     fflush(stdout);
 
     memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(input_host);
-    addr.sin_port = htons(input_port);
+    addr.sun_family = AF_UNIX;
+    strcpy(addr.sun_path, input_sock);
 
     if (connect(sockfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
         perror("connect");
