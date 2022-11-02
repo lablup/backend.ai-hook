@@ -20,7 +20,8 @@ usage() {
 }
 
 build() {
-  distro_ver=$1
+  distro="$1"
+  ver="$2"
   # match the container's user/group with this script
   user="$(id -u):$(id -g)"
   # to prevent "fatal: unable to look up current user in the passwd file: no such user" error from git
@@ -37,19 +38,21 @@ build() {
     echo ">> Cleaning up..."
     $docker_run 'make clean'
   else
-    echo ">> Building for ${distro} ${arch} ..."
+    echo ">> Building for ${distro} ${ver} ${arch} ..."
     $docker_run 'make'
-    cp "baihook/libbaihook.so" "libbaihook.${distro_ver}.${arch}.so"
-    cp "test/test-hook" "test-hook.${distro_ver}.${arch}.bin"
-    cp "test/test-hooked" "test-hooked.${distro_ver}.${arch}.bin"
+    cp "baihook/libbaihook.so" "libbaihook.${distro}${ver}.${arch}.so"
+    cp "test/test-hook" "test-hook.${distro}${ver}.${arch}.bin"
+    cp "test/test-hooked" "test-hooked.${distro}${ver}.${arch}.bin"
   fi
 }
 
 build_all() {
   FORCE_CMAKE=1
-  distro="ubuntu" build "ubuntu20.04"
-  distro="centos" build "centos7.6"
-  distro="alpine" build "alpine3.8"
+  build "ubuntu" "16.04"
+  build "ubuntu" "18.04"
+  build "ubuntu" "20.04"
+  build "centos" "7.6"
+  build "alpine" "3.8"
 }
 
 while [ $# -gt 0 ]; do
@@ -63,19 +66,22 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-distro="$1"
+arg="$1"
 arch="$(uname -m)"
 if [ "${arch}" = "arm64" ]; then
   arch="aarch64"
 fi
 
-case $distro in
-  ubuntu) build "${distro}20.04" ;;
-  centos) build "${distro}7.6" ;;
-  alpine) build "${distro}3.8" ;;
+case $arg in
+  ubuntu) build "${arg}" "20.04" ;;
+  ubuntu16.04) build "${arg}" "16.04" ;;
+  ubuntu18.04) build "${arg}" "18.04" ;;
+  ubuntu20.04) build "${arg}" "20.04" ;;
+  centos) build "${arg}" "7.6" ;;
+  alpine) build "${arg}" "3.8" ;;
   all) build_all ;;
   *)
-    echo "Unknown distro value: ${distro}"
+    echo "Unknown distro value: ${arg}"
     exit 1
 esac
 
