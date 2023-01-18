@@ -22,7 +22,15 @@ OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
     switch (flag) {
     case _SC_NPROCESSORS_ONLN:
     case _SC_NPROCESSORS_CONF:
-        return get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.cpus");
+        int result;
+
+        // check cgroup v2 cpuset controller (since linux 5.0)
+        result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset.cpus");              
+        if(result == 0)
+            // fallback to cgroup v1
+            result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.cpus");
+        return result;
+
     /* though getpagesize() call is considered as deprecated,
      * without this, redis-server from APT package will stick on a deadlock
      * during intialization process due to their own jemalloc function loading mechanism.
