@@ -24,7 +24,7 @@ OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
     case _SC_NPROCESSORS_CONF:
         int result;
 
-        // check cgroup v2 cpuset controller (since linux 5.0)
+        // check cgroup v2 cpuset controller
         result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset.cpus");              
         if(result == 0)
             // fallback to cgroup v1
