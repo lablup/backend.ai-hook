@@ -26,7 +26,7 @@ OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
 
         // check cgroup v2 cpuset controller
         result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset.cpus");              
-        if(result == 0)
+        if (result == 0)
             // fallback to cgroup v1
             result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.cpus");
         return result;
