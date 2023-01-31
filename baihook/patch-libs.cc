@@ -25,10 +25,10 @@ OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
         int result;
 
         // check cgroup v2 cpuset controller
-        result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset.cpus");              
+        result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset.cpus.effective");              
         if (result == 0)
             // fallback to cgroup v1
-            result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.cpus");
+            result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.effective_cpus");
         return result;
 
     /* though getpagesize() call is considered as deprecated,
