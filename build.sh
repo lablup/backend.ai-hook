@@ -8,9 +8,10 @@ CLEAN=0
 usage() {
   echo "Backend.AI Hook Build Script Script"
   echo ""
-  echo "Usage: $0 [OPTIONS] DISTRO"
+  echo "Usage: $0 [OPTIONS] DISTRO VERSION"
   echo ""
-  echo "DISTRO is either ubuntu or alpine."
+  echo "DISTRO is ubuntu, alpine or centos."
+  echo "VERSION is a version of given DISTRO."
   echo ""
   echo "OPTIONS"
   echo "  -h, --help        Show this help message and exit."
