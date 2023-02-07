@@ -24,7 +24,7 @@ def test_fbprophet():
         df = df[[col for col in df if nunique[col] > 1 and nunique[col] < 50]]
         nRow, nCol = df.shape
         columnNames = list(df)
-        nHistRow = (nCol + nHistogramPerRow - 1) / nHistogramPerRow
+        nHistRow = (nCol + nHistogramPerRow - 1) // nHistogramPerRow
         print("plotHistogram: step 1 (create figure)")
         plt.figure(num=None, figsize=(6*nHistogramPerRow, 9*nHistRow), dpi=80, facecolor='w', edgecolor='k')
         print("plotHistogram: step 2 (plot)")
@@ -74,7 +74,7 @@ def test_fbprophet():
     plotHistogram(df1, 10, 5)
     plotCorrelationMatrix(df1, 8)
     figfiles = os.listdir(common_path + 'output')
-    assert len(figfiles) == 2
+    assert len([file for file in figfiles if file.startswith("plot")]) == 2
 
 
 def run_tests():
