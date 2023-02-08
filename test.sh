@@ -2,11 +2,20 @@
 set -e
 
 distro="$1"
-arch="x86_64"
+arch="$(uname -m)"
+if [ "$arch" = "aarch64" ]; then
+  image_arch="arm64"
+fi
+version="$2"
+if [ -z "$version" ]; then
+  echo "Need version of distro: ${distro} <version>"
+  exit 1
+fi
+
 case $distro in
-  ubuntu) distro_ver="${distro}16.04" ;;
-  centos) distro_ver="${distro}7.6" ;;
-  alpine) distro_ver="${distro}3.8" ;;
+  ubuntu) distro_ver="${distro}${version}" ;;
+  centos) distro_ver="${distro}${version}" ;;
+  alpine) distro_ver="${distro}${version}" ;;
   *)
     echo "Unknown distro value: ${distro}"
     exit 1
@@ -34,14 +43,16 @@ if [ "$distro" = "ubuntu" ]; then
   docker run --rm -it -u ${user} -v $(pwd):/root -w /root/test \
              --cpuset-cpus=0-1,4-5 \
              --memory=1g \
-             -e LD_PRELOAD=/root/libbaihook.ubuntu16.04.x86_64.so \
-             lablup/python-ff:19.06-py36-cuda9 \
+             -e MPLCONFIGDIR=/tmp/output \
+             -e LD_PRELOAD=/root/libbaihook.ubuntu18.04.x86_64.so \
+             lablup/python-ff:21.08-py38-cuda11.1 \
              python /root/test/test-numpy.py
 
-  docker run --rm -it -u ${user} -v $(pwd):/root -w /root/test \
-             --cpuset-cpus=0-1,4-5 \
-             --memory=1g \
-             -e LD_PRELOAD=/root/libbaihook.ubuntu16.04.x86_64.so \
-             lablup/python-ff:19.06-py36-cuda9 \
-             sh -c 'mkdir -p /tmp/output; jupyter nbconvert --to notebook --execute assets/src.ipynb --output assets/result.ipynb; ls -l /tmp && ls -l assets'
+  # docker run --rm -it -u ${user} -v $(pwd):/root -w /root/test \
+  #            --cpuset-cpus=0-1,4-5 \
+  #            --memory=1g \
+  #            -e MPLCONFIGDIR=/tmp/output \
+  #            -e LD_PRELOAD=/root/libbaihook.ubuntu18.04.x86_64.so \
+  #            lablup/python-ff:21.08-py38-cuda11.1 \
+  #            sh -c 'mkdir -p /tmp/output; jupyter nbconvert --to notebook --execute assets/src.ipynb --output assets/result.ipynb; ls -l /tmp && ls -l assets'
 fi

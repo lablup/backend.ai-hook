@@ -8,9 +8,10 @@ CLEAN=0
 usage() {
   echo "Backend.AI Hook Build Script Script"
   echo ""
-  echo "Usage: $0 [OPTIONS] DISTRO"
+  echo "Usage: $0 [OPTIONS] DISTRO VERSION"
   echo ""
-  echo "DISTRO is either ubuntu or alpine."
+  echo "DISTRO is ubuntu, alpine or centos."
+  echo "VERSION is a version of given DISTRO."
   echo ""
   echo "OPTIONS"
   echo "  -h, --help        Show this help message and exit."
@@ -31,10 +32,16 @@ done
 
 distro="$1"
 arch="$(uname -m)"
+version="$2"
+if [ -z "$version" ]; then
+  echo "Need version of distro: ${distro} <version>"
+  exit 1;
+fi
+
 case $distro in
-  ubuntu) distro_ver="${distro}20.04" ;;
-  centos) distro_ver="${distro}7.6" ;;
-  alpine) distro_ver="${distro}3.8" ;;
+  ubuntu) distro_ver="${distro}${version}" ;;
+  centos) distro_ver="${distro}${version}" ;;
+  alpine) distro_ver="${distro}${version}" ;;
   *)
     echo "Unknown distro value: ${distro}"
     exit 1
@@ -45,6 +52,7 @@ user="$(id -u):$(id -g)"
 # to prevent "fatal: unable to look up current user in the passwd file: no such user" error from git
 git_fix="-e GIT_COMMITTER_NAME=devops -e GIT_COMMITTER_EMAIL=devops@lablup.com"
 
+sed -i "s/FROM.*/FROM ${distro}:${version}/" Dockerfile.${distro}
 docker build -t lablup/hook-dev:${distro} -f Dockerfile.${distro} .
 docker_run="docker run --rm -it ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro} /bin/sh -c"
 

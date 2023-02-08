@@ -1,3 +1,5 @@
+# CentOS DockerHub images are deprecated
+# use only for compatibility
 FROM centos:7
 
 RUN yum --enablerepo=extras install -y centos-release-scl
