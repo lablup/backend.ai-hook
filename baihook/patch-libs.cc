@@ -13,6 +13,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <errno.h>
 
 static const char *input_host = "127.0.0.1";
 static const int input_port = 65000;
@@ -20,15 +21,16 @@ static const int input_port = 65000;
 
 OVERRIDE_LIBC_SYMBOL(long, sysconf, int flag)
     switch (flag) {
-    case _SC_NPROCESSORS_ONLN:
-    case _SC_NPROCESSORS_CONF:
+    case _SC_NPROCESSORS_ONLN:  /* 84 */
+    case _SC_NPROCESSORS_CONF:  /* 83 */
         int result;
 
-        // check cgroup v2 cpuset controller
+        /* check cgroup v2 cpuset controller */
         result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset.cpus.effective");              
-        if (result == 0)
-            // fallback to cgroup v1
+        if (result == 0) {  /* fallback to cgroup v2*/
+            errno = 0;  /* not clearing errno set by previous get_num~ call can cause side effect */
             result = get_num_processors_from_cpuset("/sys/fs/cgroup/cpuset/cpuset.effective_cpus");
+        }
         return result;
 
     /* though getpagesize() call is considered as deprecated,
