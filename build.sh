@@ -10,7 +10,7 @@ usage() {
   echo ""
   echo "Usage: $0 [OPTIONS] DISTRO"
   echo ""
-  echo "DISTRO is either ubuntu or alpine."
+  echo "Available DISTROs are: ubuntu (resolved as ubuntu18.04), ubuntu18.04, ubuntu20.04, ubuntu22.04 or alpine."
   echo ""
   echo "OPTIONS"
   echo "  -h, --help        Show this help message and exit."
@@ -32,7 +32,18 @@ done
 distro="$1"
 arch="$(uname -m)"
 case $distro in
-  ubuntu) distro_ver="${distro}20.04" ;;
+  ubuntu22.04)
+	  distro="ubuntu"
+	  distro_ver="ubuntu22.04"
+	  ;;
+  ubuntu20.04)
+	  distro="ubuntu"
+	  distro_ver="ubuntu20.04"
+	  ;;
+  ubuntu18.04|ubuntu)
+	  distro="ubuntu"
+	  distro_ver="ubuntu18.04"
+	  ;;
   centos) distro_ver="${distro}7.6" ;;
   alpine) distro_ver="${distro}3.8" ;;
   *)
@@ -45,8 +56,8 @@ user="$(id -u):$(id -g)"
 # to prevent "fatal: unable to look up current user in the passwd file: no such user" error from git
 git_fix="-e GIT_COMMITTER_NAME=devops -e GIT_COMMITTER_EMAIL=devops@lablup.com"
 
-docker build -t lablup/hook-dev:${distro} -f Dockerfile.${distro} .
-docker_run="docker run --rm -it ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro} /bin/sh -c"
+docker build -t lablup/hook-dev:${distro_ver} -f Dockerfile.${distro_ver} .
+docker_run="docker run --rm -it ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro_ver} /bin/sh -c"
 
 if [ "$FORCE_CMAKE" -eq 1 -o ! -f "Makefile" ]; then
   echo ">> Running CMake to (re-)generate build scripts..."
