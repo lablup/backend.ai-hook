@@ -66,6 +66,7 @@ fi
 if [ "$CLEAN" -eq 1 ]; then
   echo ">> Cleaning up..."
   $docker_run 'make clean'
+  rm -r CMakeFiles googletest-build googletest-download CMakeCache.txt cmake_install.cmake Makefile
 else
   echo ">> Building for ${distro} ${arch} ..."
   $docker_run 'make'
