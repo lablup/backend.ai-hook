@@ -10,7 +10,7 @@ usage() {
   echo ""
   echo "Usage: $0 [OPTIONS] DISTRO"
   echo ""
-  echo "Available DISTROs are: ubuntu (resolved as ubuntu18.04), ubuntu18.04, ubuntu20.04, ubuntu22.04 or alpine."
+  echo "Available DISTROs are: ubuntu (resolved as ubuntu18.04), ubuntu18.04, ubuntu20.04, ubuntu22.04, alpine, centos or centos8.0"
   echo ""
   echo "OPTIONS"
   echo "  -h, --help        Show this help message and exit."
@@ -45,6 +45,7 @@ case $distro in
 	  distro_ver="ubuntu18.04"
 	  ;;
   centos) distro_ver="${distro}7.6" ;;
+  centos8.0) distro_ver="${distro}" ;;
   alpine) distro_ver="${distro}3.8" ;;
   *)
     echo "Unknown distro value: ${distro}"

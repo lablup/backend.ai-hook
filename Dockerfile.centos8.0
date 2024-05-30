@@ -1,0 +1,16 @@
+FROM centos:centos8
+
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+
+# Install necessary packages
+RUN dnf install -y dnf-plugins-core \
+    && dnf install -y epel-release \
+    && dnf config-manager --set-enabled powertools \
+    && dnf install -y gcc gcc-c++ make cmake git kernel-devel ca-certificates \
+    && dnf install -y libstdc++-static which
+
+# Enable the new toolchain always in any followed docker run commands
+COPY docker.centos8.0.entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# vim: ft=dockerfile
