@@ -1,4 +1,4 @@
-name: Release aarch64
+name: Build and release aarch64 binaries
 
 on: [push]
 
