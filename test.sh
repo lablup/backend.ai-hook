@@ -6,6 +6,7 @@ arch="x86_64"
 case $distro in
   ubuntu) distro_ver="${distro}16.04" ;;
   centos) distro_ver="${distro}7.6" ;;
+  centos8.0) distro_ver="${distro}" ;;
   alpine) distro_ver="${distro}3.8" ;;
   *)
     echo "Unknown distro value: ${distro}"
