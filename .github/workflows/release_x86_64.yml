@@ -1,6 +1,6 @@
-name: default
+name: Build and release x86_64 binaries
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   release:
@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["x86_64", "aarch64"]
+        target: ["x86_64"]
         os: ["ubuntu18.04", "ubuntu20.04", "ubuntu22.04", "alpine"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build libbaihook
         run: |
@@ -19,7 +19,7 @@ jobs:
           rm -rf Makefile
 
       - name: Release to GitHub
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
           files: |
