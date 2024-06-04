@@ -1,0 +1,31 @@
+name: Release aarch64
+
+on: [push]
+
+jobs:
+  release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: ["aarch64"]
+        os: ["ubuntu18.04", "ubuntu20.04", "ubuntu22.04", "alpine"]
+    steps:
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: arm64
+
+      - uses: actions/checkout@v4
+
+      - name: Build libbaihook
+        run: |
+          ./build.sh ${{ matrix.os }}
+          rm -rf Makefile
+
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            ./*.so
