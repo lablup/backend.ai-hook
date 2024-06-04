@@ -19,21 +19,19 @@ usage() {
   echo "  --force-cmake     Force to re-run cmake to refresh build scripts."
 }
 
-arch=$(uname -m)
+ARCH=$(uname -m)
 
 while [ $# -gt 0 ]; do
   case $1 in
     -h | --help) usage; exit 1 ;;
     --force-cmake) FORCE_CMAKE=1 ;;
     --clean) CLEAN=1 ;;
-    --arch) shift; arch=$1 ;;
-    *)
-      break
+    --arch) ARCH=$2; shift;;
+    --arch=*) ARCH="${1#*=}" ;;
+    *) distro="$1"
   esac
   shift
 done
-
-distro="$1"
 
 case $distro in
   ubuntu22.04)
@@ -60,14 +58,14 @@ user="$(id -u):$(id -g)"
 # to prevent "fatal: unable to look up current user in the passwd file: no such user" error from git
 git_fix="-e GIT_COMMITTER_NAME=devops -e GIT_COMMITTER_EMAIL=devops@lablup.com"
 
-if [ "$arch" = "aarch64" ]; then
+if [ "$ARCH" = "aarch64" ]; then
     echo '{ "experimental": true }' | sudo tee /etc/docker/daemon.json
     sudo systemctl restart docker
 
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 fi
 
-docker build --platform=linux/${arch} -t lablup/hook-dev:${distro_ver} -f Dockerfile.${distro_ver} .
+docker build --platform=linux/${ARCH} -t lablup/hook-dev:${distro_ver} -f Dockerfile.${distro_ver} .
 
 docker_run="docker run --rm ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro_ver} /bin/sh -c"
 
@@ -80,9 +78,9 @@ if [ "$CLEAN" -eq 1 ]; then
   $docker_run 'make clean'
   rm -r CMakeFiles googletest-build googletest-download CMakeCache.txt cmake_install.cmake Makefile
 else
-  echo ">> Building for ${distro} ${arch} ..."
+  echo ">> Building for ${distro} ${ARCH} ..."
   $docker_run 'make'
-  cp "baihook/libbaihook.so" "libbaihook.${distro_ver}.${arch}.so"
-  cp "test/test-hook" "test-hook.${distro_ver}.${arch}.bin"
-  cp "test/test-hooked" "test-hooked.${distro_ver}.${arch}.bin"
+  cp "baihook/libbaihook.so" "libbaihook.${distro_ver}.${ARCH}.so"
+  cp "test/test-hook" "test-hook.${distro_ver}.${ARCH}.bin"
+  cp "test/test-hooked" "test-hooked.${distro_ver}.${ARCH}.bin"
 fi
