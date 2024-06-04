@@ -57,7 +57,7 @@ user="$(id -u):$(id -g)"
 git_fix="-e GIT_COMMITTER_NAME=devops -e GIT_COMMITTER_EMAIL=devops@lablup.com"
 
 docker build -t lablup/hook-dev:${distro_ver} -f Dockerfile.${distro_ver} .
-docker_run="docker run --rm -it ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro_ver} /bin/sh -c"
+docker_run="docker run --rm ${git_fix} -v "$(pwd):/root" -u ${user} -w=/root lablup/hook-dev:${distro_ver} /bin/sh -c"
 
 if [ "$FORCE_CMAKE" -eq 1 -o ! -f "Makefile" ]; then
   echo ">> Running CMake to (re-)generate build scripts..."
