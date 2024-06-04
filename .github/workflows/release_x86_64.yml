@@ -16,7 +16,6 @@ jobs:
       - name: Build libbaihook
         run: |
           ./build.sh ${{ matrix.os }}
-          rm -rf Makefile
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v2
