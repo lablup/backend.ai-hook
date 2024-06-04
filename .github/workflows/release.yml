@@ -1,4 +1,4 @@
-name: Build and release x86_64 binaries
+name: Build and release
 
 on: [push]
 
@@ -8,14 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["x86_64"]
+        target: ["x86_64", "aarch64"]
         os: ["ubuntu18.04", "ubuntu20.04", "ubuntu22.04", "alpine"]
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install QEMU
+        if: matrix.target == 'aarch64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+          sudo update-binfmts --enable qemu-arm
+          sudo update-binfmts --enable qemu-aarch64
+
       - name: Build libbaihook
         run: |
-          ./build.sh ${{ matrix.os }}
+          ./build.sh --arch ${{ matrix.target }} ${{ matrix.os }}
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v2
